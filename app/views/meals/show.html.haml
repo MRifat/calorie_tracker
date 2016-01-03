@@ -1,1 +1,26 @@
-%h1 Show
+.container.container-fluid
+  .row
+    %h1= @meal.name
+  .row
+    .container.container-fluid
+      %table.table-responsive.table-condensed.table-striped
+        %thead
+          %tr
+            %th
+            %th Name
+            %th Notes
+            %th Consumed at(Date)
+            %th Consumed at(Time)
+            %th Amount of Calories
+
+        %tbody
+          %tr
+            %td
+            %td= @meal.name
+            %td= @meal.notes
+            %td= @meal.consumed_at.strftime('%d/%m/%Y')
+            %td= @meal.consumed_at.strftime('%I:%M:%S %p')
+            %td= @meal.amount_of_calories
+
+    .controls.pull-right
+      = link_to 'Back', meals_path, class: 'btn btn-success'

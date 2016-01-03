@@ -6,6 +6,8 @@ class User < ActiveRecord::Base
 
   has_many :meals
 
+  validates_presence_of :first_name, :last_name, :daily_calorie_goal
+
   def humanized_name
     return "#{self.first_name} #{self.last_name}"
   end

@@ -35,6 +35,8 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'devise'
 gem 'haml-rails'
 gem 'bootstrap-sass'
+gem 'momentjs-rails'
+gem 'bootstrap3-datetimepicker-rails'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

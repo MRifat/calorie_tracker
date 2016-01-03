@@ -1,0 +1,34 @@
+= form_for @meal, class: 'from-horizontal' do |form|
+  .row
+    .form-group.clearfix
+      = form.label :name, class: 'col-sm-2 control-label'
+      .col-sm-6
+        = form.text_field :name, class: 'form-control'
+  .row
+    .form-group.clearfix
+      = form.label :notes, class: 'col-sm-2 control-label'
+      .col-sm-6
+        = form.text_area :notes, class: 'form-control'
+  .row
+    .form-group.clearfix
+      = form.label :amount_of_calories, class: 'col-sm-2 control-label'
+      .col-sm-6
+        = form.number_field :amount_of_calories, class: 'form-control'
+  .row
+    .input-append.clearfix#consumed-at-picker
+      = form.label :consumed_at, class: 'col-sm-4 control-label'
+      .col-sm-8
+        = form.text_field :consumed_at, 'data-format' => 'MM/dd/yyyy HH:mm:ss PP', class: 'hidden'
+        %span.add-on
+          %i{'data-time-icon' => 'icon-time', 'data-date-icon' => 'icon-calendar'}
+  .row.clearfix
+    .form-group
+      = form.submit "Eat!", class: 'btn btn-info'
+
+:javascript
+  $(function (){
+    $('#consumed-at-picker').datetimepicker({
+      inline: true,
+      sideBySide: true
+    });
+  });

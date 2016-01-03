@@ -21,6 +21,7 @@ class MealsController < ApplicationController
     meal = current_user.meals.where("id = ?", params[:id]).first
     meal.update(meal_params)
 
+    redirect_to meals_path and return
     # TODO: Handle Exceptions
   end
 
@@ -30,23 +31,24 @@ class MealsController < ApplicationController
 
   def create
     @meal = current_user.meals.create(meal_params)
-
-    # TODO: Handle create/exceptions
+    redirect_to meals_path and return
+  rescue Exception => e
   end
 
   def destroy
     meal = current_user.meals.where("id = ?", params[:id]).first
     if meal.destroy
-      # Do something
+      flash[:notice] = 'Successfuly Deleted'
     else
-      # Do something else
+      flash[:alert] = "Couldn't delete Meal"
     end
+    redirect_to meals_path and return
   end
 
   private
   # Below this line thar be Dragons
   #
   def meal_params
-    param.require(:meal).premit(:id, :name, :notes, :consumed_at, :amounts_of_calories)
+    params.require(:meal).permit(:id, :name, :notes, :consumed_at, :amount_of_calories)
   end
 end
