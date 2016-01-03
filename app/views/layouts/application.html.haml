@@ -1,0 +1,15 @@
+!!!
+%html
+  %head
+    %title CalorieTracker
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tags
+  %body
+    .jumbatron.main-jumbatron
+      = render 'layouts/notifications'
+      .container
+        = render 'layouts/navbar'
+    .wrap
+      .container
+        = yield
