@@ -3,6 +3,10 @@ class MealsController < ApplicationController
 
   def index
     @meals = current_user.meals
+    respond_to do |format|
+      format.html
+      format.json {render meals: @meals.as_json(only: [:id, :name, :notes, :consumed_at, :amount_of_calories])}
+    end
   end
 
   def show
@@ -30,9 +34,13 @@ class MealsController < ApplicationController
   end
 
   def create
-    @meal = current_user.meals.create(meal_params)
+    @meal = current_user.meals.create(meal_params.merge(consumed_at: meal_params[:consumed_at].to_datetime))
+    if @meal.present?
+      flash[:notice] = 'Created Successfuly'
+    else
+      flash[:alert] = 'Failed'
+    end
     redirect_to meals_path and return
-  rescue Exception => e
   end
 
   def destroy

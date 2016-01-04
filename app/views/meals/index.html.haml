@@ -3,33 +3,17 @@
     %h1
       Welcome to Calorie Tracker
   .row
-    - if @meals.present?
-      .container.container-fluid
-        %table.table-responsive.table-condensed.table-hover.meals-table
-          %thead
-            %tr
-              %th
-              %th Name
-              %th Notes
-              %th Consumed at(Date)
-              %th Consumed at(Time)
-              %th Amount of Calories
-              %th
-              %th
-              %th
+    %form
+      .input-append.clearfix#fromFilter
+        .col-sm-8#from
+          %span.add-on
+            %i{'data-time-icon' => 'icon-time', 'data-date-icon' => 'icon-calendar'}
+      .input-append.clearfix#toFilter
+        .col-sm-8#to
+          %span.add-on
+            %i{'data-time-icon' => 'icon-time', 'data-date-icon' => 'icon-calendar'}
 
-          %tbody
-            - @meals.each do |meal|
-              %tr
-                %td
-                %td= meal.name
-                %td= meal.notes
-                %td= meal.consumed_at.strftime('%d/%m/%Y')
-                %td= meal.consumed_at.strftime('%I:%M:%S %p')
-                %td= meal.amount_of_calories
-                %td= link_to 'Show', meal_path(meal), class: 'btn btn-success'
-                %td= link_to 'Edit', edit_meal_path(meal), class: 'btn btn-warning'
-                %td= link_to 'Delete', meal_path(meal), method: :delete, class: 'btn btn-danger'
 
+    = react_component 'FilterableMealTable', {meals: @meals.as_json(only: [:id, :name, :notes, :consumed_at, :amount_of_calories])}
     .controls.pull-right
       = link_to 'Add new Meal', new_meal_path, class: 'btn btn-success'
