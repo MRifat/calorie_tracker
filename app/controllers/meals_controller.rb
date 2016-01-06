@@ -1,12 +1,12 @@
 class MealsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_form_data
 
   def index
-    @meals = current_user.meals
-    respond_to do |format|
-      format.html
-      format.json {render meals: @meals.as_json(only: [:id, :name, :notes, :consumed_at, :amount_of_calories])}
-    end
+    @data = {
+      meals: current_user.meals.as_json(only: [:id, :name, :notes, :consumed_at, :amount_of_calories]),
+      form: @form_data
+    }
   end
 
   def show
@@ -24,9 +24,15 @@ class MealsController < ApplicationController
   def update
     meal = current_user.meals.where("id = ?", params[:id]).first
     meal.update(meal_params)
-
-    redirect_to meals_path and return
-    # TODO: Handle Exceptions
+    response = {success: false}
+    if meal.save
+    data = {
+      meals: current_user.meals.as_json(only: [:id, :name, :notes, :consumed_at, :amount_of_calories]),
+      form: @form_data
+    }
+      response = {success: true, data: data}
+    end
+    render json: response
   end
 
   def new
@@ -34,13 +40,16 @@ class MealsController < ApplicationController
   end
 
   def create
-    @meal = current_user.meals.create(meal_params.merge(consumed_at: meal_params[:consumed_at].to_datetime))
-    if @meal.present?
-      flash[:notice] = 'Created Successfuly'
-    else
-      flash[:alert] = 'Failed'
+    meal = current_user.meals.new(meal_params.merge(consumed_at: meal_params[:consumed_at].to_datetime))
+    response = {success: false}
+    if meal.save
+    data = {
+      meals: current_user.meals.as_json(only: [:id, :name, :notes, :consumed_at, :amount_of_calories]),
+      form: @form_data
+    }
+      response = {success: true, data: data}
     end
-    redirect_to meals_path and return
+    render json: response
   end
 
   def destroy
@@ -58,5 +67,13 @@ class MealsController < ApplicationController
   #
   def meal_params
     params.require(:meal).permit(:id, :name, :notes, :consumed_at, :amount_of_calories)
+  end
+
+  def set_form_data
+    @form_data = { action: meals_path,
+                   method: 'POST',
+                   csrf_param: request_forgery_protection_token,
+                   csrf_token: form_authenticity_token
+                 }
   end
 end
