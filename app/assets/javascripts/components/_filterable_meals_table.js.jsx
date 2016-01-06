@@ -4,8 +4,21 @@ var FilterableMealsTable = React.createClass({
       fromText: '',
       toText: '',
       meals: this.props.data.meals,
-      form: this.props.data.form
+      form: this.props.data.form,
+      calories: this.props.data.goal
     };
+  },
+
+  componentDidMount: function() {
+    var comp = this;
+    $(document).ready(function() {
+      ReactDOM.render(<CalorieTracker currentCalories={comp.state.calories.current_calories} container="calorie-tracker" goal={comp.state.calories.goal}/>, document.getElementById('calorie-tracker'));
+      drawProgress();
+    });
+  },
+
+  resetProgress: function() {
+    ReactDOM.render(<CalorieTracker currentCalories={this.state.calories.current_calories} container="calorie-tracker" goal={this.state.calories.goal}/>, document.getElementById('calorie-tracker'));
   },
 
   handleUserInput: function(fromText, toText) {
@@ -26,7 +39,10 @@ var FilterableMealsTable = React.createClass({
           if(container !== '') {
             ReactDOM.unmountComponentAtNode(document.getElementById(container));
           }
-          this.setState({meals: resp.data.meals, form: resp.data.form});
+          this.setState({meals: resp.data.meals, form: resp.data.form, calories: resp.data.goal});
+          ReactDOM.unmountComponentAtNode(document.getElementById('calorie-tracker'));
+          this.resetProgress();
+          drawProgress();
         }
       }.bind(this)
     });

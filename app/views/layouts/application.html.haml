@@ -12,4 +12,9 @@
         = render 'layouts/navbar'
     .wrap
       .container
-        = yield
+        .container
+          .row#user-settings
+        .container
+          .col-sm-8
+            = yield
+          .col-sm-4#calorie-tracker

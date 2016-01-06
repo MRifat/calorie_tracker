@@ -1,24 +1,15 @@
 class MealsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_form_data
+  before_action :set_extra_data
 
   def index
     @data = {
       meals: current_user.meals.as_json(only: [:id, :name, :notes, :consumed_at, :amount_of_calories]),
-      form: @form_data
-    }
-  end
-
-  def show
-    @meal = current_user.meals.where("id = ?", params[:id]).first
-
-    # TODO: Handle Meal does not exist
-  end
-
-  def edit
-    @meal = current_user.meals.where("id = ?", params[:id]).first
-
-    # TODO: Handle Meal does not exist
+      goal: {
+        current_calories: current_user.meals.where(consumed_at: (Date.today.beginning_of_day..Date.today.end_of_day)).map(&:amount_of_calories).inject(:+),
+        goal: current_user.daily_calorie_goal
+      }
+    }.merge(@extra_data)
   end
 
   def update
@@ -28,15 +19,14 @@ class MealsController < ApplicationController
     if meal.save
     data = {
       meals: current_user.meals.as_json(only: [:id, :name, :notes, :consumed_at, :amount_of_calories]),
-      form: @form_data
-    }
+      goal: {
+        current_calories: current_user.meals.where(consumed_at: (Date.today.beginning_of_day..Date.today.end_of_day)).map(&:amount_of_calories).inject(:+),
+        goal: current_user.daily_calorie_goal
+      }
+    }.merge(@extra_data)
       response = {success: true, data: data}
     end
     render json: response
-  end
-
-  def new
-    @meal = current_user.meals.new
   end
 
   def create
@@ -45,8 +35,11 @@ class MealsController < ApplicationController
     if meal.save
     data = {
       meals: current_user.meals.as_json(only: [:id, :name, :notes, :consumed_at, :amount_of_calories]),
-      form: @form_data
-    }
+      goal: {
+        current_calories: current_user.meals.where(consumed_at: (Date.today.beginning_of_day..Date.today.end_of_day)).map(&:amount_of_calories).inject(:+),
+        goal: current_user.daily_calorie_goal
+      }
+    }.merge(@extra_data)
       response = {success: true, data: data}
     end
     render json: response
@@ -58,8 +51,11 @@ class MealsController < ApplicationController
     if meal.destroy
     data = {
       meals: current_user.meals.as_json(only: [:id, :name, :notes, :consumed_at, :amount_of_calories]),
-      form: @form_data
-    }
+      goal: {
+        current_calories: current_user.meals.where(consumed_at: (Date.today.beginning_of_day..Date.today.end_of_day)).map(&:amount_of_calories).inject(:+),
+        goal: current_user.daily_calorie_goal
+      }
+    }.merge(@extra_data)
     response = {success: true, data: data}
     end
     render json: response
@@ -72,11 +68,20 @@ class MealsController < ApplicationController
     params.require(:meal).permit(:id, :name, :notes, :consumed_at, :amount_of_calories)
   end
 
-  def set_form_data
-    @form_data = { action: meals_path,
-                   method: 'POST',
-                   csrf_param: request_forgery_protection_token,
-                   csrf_token: form_authenticity_token
-                 }
+  def set_extra_data
+    @extra_data = {
+      form: {
+        action: meals_path,
+        method: 'POST',
+        csrf_param: request_forgery_protection_token,
+        csrf_token: form_authenticity_token
+      },
+      user_form: {
+        action: '/users',
+        method: 'PATCH',
+        csrf_param: request_forgery_protection_token,
+        csrf_token: form_authenticity_token
+      }
+    }
   end
 end

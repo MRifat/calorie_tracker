@@ -1,6 +1,6 @@
-.container.container-fluid
-  .row
-    %h1
-      Welcome to Calorie Tracker
-  .row.meals
-    = react_component 'FilterableMealsTable', data: @data, prerender: true
+.row
+  %h1
+    Welcome to Calorie Tracker
+.row
+  #meals
+  = react_component 'FilterableMealsTable', data: @data, prerender: true
