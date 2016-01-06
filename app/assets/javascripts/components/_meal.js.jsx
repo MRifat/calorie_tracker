@@ -1,7 +1,12 @@
 var MealRow = React.createClass({
+  destroyMeal: function() {
+    var action = this.props.form.action + '/' + this.props.meal.id + '';
+    this.props.formSubmit({}, action, 'DELETE', '');
+  },
+
   editForm: function() {
-    var {action, ...other} = this.props.form;
-    
+    var {action, method, ...other} = this.props.form;
+
     other.action = this.props.form.action + '/' + this.props.meal.id + '';
     other.method = 'PATCH';
     other.id = 'edit';
@@ -20,8 +25,9 @@ var MealRow = React.createClass({
         <td>
           <a href="#" className="btn btn-warning" onClick={this.editForm}>Edit</a>
         </td>
-        <td></td>
-        <td></td>
+        <td>
+          <a href="#" className="btn btn-danger" onClick={this.destroyMeal}>Delete</a>
+        </td>
       </tr>
     );
    }

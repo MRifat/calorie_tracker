@@ -23,7 +23,9 @@ var FilterableMealsTable = React.createClass({
       dataType: 'JSON',
       success: function(resp) {
         if (resp.success) {
-          ReactDOM.unmountComponentAtNode(document.getElementById(container));
+          if(container !== '') {
+            ReactDOM.unmountComponentAtNode(document.getElementById(container));
+          }
           this.setState({meals: resp.data.meals, form: resp.data.form});
         }
       }.bind(this)

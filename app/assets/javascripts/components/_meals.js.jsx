@@ -27,7 +27,6 @@ var MealTable = React.createClass({
               <th>Calories</th>
               <th></th>
               <th></th>
-              <th></th>
             </tr>
           </thead>
           <tbody>

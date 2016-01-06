@@ -54,12 +54,15 @@ class MealsController < ApplicationController
 
   def destroy
     meal = current_user.meals.where("id = ?", params[:id]).first
+    response = {success: false}
     if meal.destroy
-      flash[:notice] = 'Successfuly Deleted'
-    else
-      flash[:alert] = "Couldn't delete Meal"
+    data = {
+      meals: current_user.meals.as_json(only: [:id, :name, :notes, :consumed_at, :amount_of_calories]),
+      form: @form_data
+    }
+    response = {success: true, data: data}
     end
-    redirect_to meals_path and return
+    render json: response
   end
 
   private
