@@ -13,5 +13,11 @@ FactoryGirl.define do
         create(:meal, {user_id: user.id})
       end
     end
+
+    trait :with_connected_apps do
+      after(:create) do |user|
+        create(:connected_app, {user_id: user.id})
+      end
+    end
   end
 end

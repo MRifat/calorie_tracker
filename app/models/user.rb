@@ -5,10 +5,12 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   has_many :meals
+  has_many :connected_apps
 
   validates_presence_of :first_name, :last_name, :daily_calorie_goal
 
   def humanized_name
     return "#{self.first_name} #{self.last_name}"
   end
+
 end
